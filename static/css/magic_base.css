@@ -1,0 +1,78 @@
+html, body {
+    font-family: 'PingFang SC', Helvetica, sans-serif;
+    font-size: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 640px;
+}
+
+input[type="search"] {
+    border-radius: 3px;
+    border: 1px solid;
+}
+
+.show {
+    display: block !important;
+}
+
+.hidden {
+    display: none;
+}
+
+.right {
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
+.clear {
+    clear: both;
+}
+
+.center {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.full-center {
+    position: absolute !important;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.btn-default:hover {
+    background-color: rgba(49, 161, 240, 0.70);
+    border: 1px solid #32a1f0;
+}
+
+.btn-default {
+    display: inline-block;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    color: #626262;
+    font-size: 14px;
+    padding: 4px 8px;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 17px;
+}
+
+
+.alert-required {
+    border: 1px solid #ff28ab;
+    color: #ff1078;
+}
+
+
+.red-16 {
+    font-size: 16px;
+    color: #ff1078;
+}
+
