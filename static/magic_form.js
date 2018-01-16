@@ -12,7 +12,7 @@
  */
 
 
-var existAlertRequired = function(button) {
+const existAlertRequired = function(button) {
     // javascript 原生, 判断 parent 节点内是否存在没完成的必做题
     var parent = button.closest('.magic-auto-form')
     var alerts = parent.querySelectorAll('.alert-required')
@@ -20,7 +20,7 @@ var existAlertRequired = function(button) {
 }
 
 
-var checkRequireInputs = function(button, inputClass = '.magic-input') {
+const checkRequireInputs = function(button, inputClass = '.magic-input') {
     // 依赖jquery, 检查输入, 并且返回是否通过
     var flag = true
     var inputs = $(button).closest('.magic-auto-form').find(inputClass)
@@ -38,7 +38,7 @@ var checkRequireInputs = function(button, inputClass = '.magic-input') {
 }
 
 
-var magicForm = function(button, inputClass = '.magic-input') {
+const magicForm = function(button, inputClass = '.magic-input') {
     /*
         <div class="magic-auto-form">
             <input class="magic-input" data-key="name">
@@ -61,7 +61,7 @@ var magicForm = function(button, inputClass = '.magic-input') {
 }
 
 
-var magicReactForm = function(button, action = magicForm) {
+const magicReactForm = function(button, action = magicForm) {
     var path = button.dataset.path
     var method = button.dataset.method
     var block = button.dataset.block
@@ -72,7 +72,7 @@ var magicReactForm = function(button, action = magicForm) {
 }
 
 
-var magicUploadFiles = function(button, alertCallback) {
+const magicUploadFiles = function(button, alertCallback) {
     /* 上传多个文件
         <div class="magic-auto-form">
             <input class="magic-input-file"
@@ -112,7 +112,7 @@ var magicUploadFiles = function(button, alertCallback) {
 // ***************************************************************** //
 
 // 自动提交表单
-var bindMagicReactForm = function(success, fail) {
+const bindMagicReactForm = function(success, fail) {
     $('body').on('click', '.magic-submit', function() {
         var e = this
         if (checkRequireInputs(e)) {
@@ -129,7 +129,7 @@ var bindMagicReactForm = function(success, fail) {
 }
 
 // 动态模拟超链接
-var bindMagicHref = function(callback) {
+const bindMagicHref = function(callback) {
     $('body').on('click', '.magic-submit-href', function() {
         var e = this
         if (checkRequireInputs(e)) {
@@ -143,7 +143,7 @@ var bindMagicHref = function(callback) {
 }
 
 // 上传多个文件
-var bindMagicUploadFiles = function(alertCallback) {
+const bindMagicUploadFiles = function(alertCallback) {
     $('body').on('click', '.magic-submit-file', function() {
         var e = this
         magicUploadFiles(e, alertCallback)
