@@ -1,0 +1,40 @@
+
+/*
+复制按钮 magic_copy.js
+*/
+
+.btn-copy {
+    cursor: pointer;
+    position: relative;
+}
+
+.text-copied::after {
+    position: absolute;
+    top: -5%;
+    right: 110%;
+    display: block;
+    content: "copied";
+    font-size: 12px;
+    padding: 0px 3px;
+    line-height: 19px;
+    color: #fff;
+    background-color: #31a1f0;
+    border-radius: 2px;
+    opacity: 0;
+    will-change: opacity, transform;
+    animation: showcopied 1.5s ease;
+}
+
+@keyframes showcopied {
+    0% {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    70% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    100% {
+        opacity: 0;
+    }
+}
