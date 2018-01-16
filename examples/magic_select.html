@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Magic-Select</title>
+    <script src="//cdn.bootcss.com/jquery/3.2.0/jquery.min.js"></script>
+    <link href="../static/css/magic_base.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="magic-auto-form">
+    <div class="magic-select-block"
+         data-preset="true"
+         data-preset_value="上海"
+         data-key="city">
+    </div>
+    <button class="magic-submit-href-with-selection"
+            data-path="/city">
+        访问链接
+    </button>
+</div>
+
+<script src="../static/magic_utils.js"></script>
+<script src="../static/magic_ajax.js"></script>
+<script src="../static/magic_form.js"></script>
+<script src="../static/magic_select.js"></script>
+
+<script>
+    var s1 = {
+        title: "城市",
+        key: "city",
+        required: true,
+        multiple: false,
+        options: [
+            {
+                value: "北京",
+                text: "北京",
+            },
+            {
+                value: "上海",
+            },
+            {
+                value: "其他",
+                remark: true,
+            },
+        ],
+    }
+
+    $(document).ready(function() {
+        initMagicSelectionItems([s1])
+    })
+
+</script>
+</body>
+</html>
