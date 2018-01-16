@@ -359,8 +359,8 @@ const bindMagicAjaxWithSelection = function(callback) {
 
 
 const bindMagicHrefWithSelection = function(callback) {
-    $('body').on('click', '.magic-submit-href-with-selection', function() {
-        var e = this.currentTarget
+    $('body').on('click', '.magic-submit-href-with-selection', function(event) {
+        var e = event.currentTarget
         magicHrefWithSelection(e)
         if (callback != undefined) {
             callback(e)
