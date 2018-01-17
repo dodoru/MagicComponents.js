@@ -1,0 +1,168 @@
+{# 依赖 js/component/magic_selection.js, 模拟实现选择题 #}
+{# jinja-macro 实现 magic-selector #}
+
+{#  主要用于 调查信息收集的导航页里(/classroom/admin/survey) #}
+{#  使用方法
+    {% import 'samples/jinja_magic_select.html' as m %}
+    {{ m.magic_select(*args) }}
+#}
+
+{% macro magic_select(title, key, options, react_target='',select_id='', multiple=false, required=true) -%}
+    {# @title: str, 选择题目 #}
+    {# @key: str, 表值 #}
+    {# @react_target: 如果设置，就为链式选择题，否则是普通选择题 #}
+    {# @mutiplie: bool, 是否多选题, 默认 false #}
+    {# @required: bool, 是否比选题, 默认 true  #}
+
+    {# 判断是否链式选择题 #}
+    {% if react_target %}
+        {% set react_tag = 'magic-select-react' %}
+        {% set react_data = 'data-react_target=%s'|format(react_target) %}
+    {% else %}
+        {% set react_tag = '' %}
+        {% set react_data = '' %}
+    {% endif %}
+
+    {# 如果是链式选择题的下游选择，会有 select_id #}
+    {% if select_id %}
+        {% set id_tag = 'id=%s'|format(select_id) %}
+    {% else %}
+        {% set id_tag = '' %}
+    {% endif %}
+
+    <div class="magic-select {{ react_tag }}" {{ id_tag }} {{ react_data }}
+         data-key="{{ key }}"
+         data-required="{{ required | lower }}"
+         data-multiple="{{ multiple | lower }}">
+        {# 选择题目 #}
+        <p class="magic-select-title"> {{ title }} </p>
+        <div class="magic-select-options">
+            {# 选择项, 基本样式如下，注意设置 option_type = 'radio' | 'checkbox'
+            {% for m in options %}
+            <div class="magic-option">
+                <input class="magic-option-input"
+                       type="{{ option_type }}"
+                       value="{{ value }}"
+                >
+                <label> {{ text }} </label>
+            </div>
+            {% endfoor %}
+            #}
+            {{ options }}
+        </div>
+    </div>
+
+{%- endmacro %}
+
+
+
+{# 1. 选择科目 ： subject  #}
+{% macro magic_option_subject(subjects) -%}
+    {% for m in subjects %}
+        {% set value = m.id %}
+        {% set text = m.title %}
+        <div class="magic-option">
+            <input class="magic-option-input"
+                   type="radio"
+                   value="{{ value }}"
+            >
+            <label> {{ text }} </label>
+        </div>
+    {% endfor %}
+{%- endmacro %}
+
+
+{% macro magic_select_subject(subjects, react_target='') -%}
+    {% set title = '选择课程' %}
+    {% set key = 'subject_id' %}
+    {% set options = magic_option_subject(subjects) %}
+    {% set result = magic_select(title, key, options, react_target) %}
+    {{ result }}
+{%- endmacro %}
+
+
+{# 2. 选择课节 ： lesson  #}
+{% macro magic_option_lesson(lessons) -%}
+    {% for m in lessons %}
+        {% set value = m.id %}
+        {% set text = '第%s课'|format(m.title) %}
+        {# 因为这是链式选择题的子链， 所以先不显示所有的选项 #}
+        <div class="magic-option hidden">
+            <input class="magic-option-input"
+                   type="radio"
+                   data-subject_id="{{ m.subject_id }}"
+                   value="{{ value }}"
+            >
+            <label> {{ text }} </label>
+        </div>
+    {% endfor %}
+{%- endmacro %}
+
+
+{% macro magic_select_lesson(lessons, react_target='', select_id='') -%}
+    {% set title = '选择课节' %}
+    {% set key = 'lesson_id' %}
+    {% set options = magic_option_lesson(lessons) %}
+    {% set result = magic_select(title, key, options, react_target, select_id) %}
+    {{ result }}
+{%- endmacro %}
+
+
+{# 3. 选择作业 ： task  #}
+{% macro magic_option_task(tasks) -%}
+    {% for m in tasks %}
+        {% set value = m.id %}
+        {% set text = '作业%s'|format(m.title) %}
+        {# 因为这是链式选择题的子链， 所以先不显示所有的选项 #}
+        <div class="magic-option hidden">
+            <input class="magic-option-input"
+                   type="radio"
+                   data-lesson_id="{{ m.lesson_id }}"
+                   value="{{ value }}"
+            >
+            <label> {{ text }} </label>
+        </div>
+    {% endfor %}
+{%- endmacro %}
+
+
+{% macro magic_select_task(tasks, react_target='', select_id='') -%}
+    {% set title = '选择作业' %}
+    {% set key = 'task_id' %}
+    {% set options = magic_option_task(tasks) %}
+    {% set result = magic_select(title, key, options, react_target, select_id) %}
+    {{ result }}
+{%- endmacro %}
+
+
+{# 4. 选择调查问题 ： survey lesson  #}
+{% macro magic_opiton_survey() -%}
+    {% set quetions=[
+        ("q1&_type=sa", "调查a1?"),
+        ("q2&_type=sa"," 调查a2?"),
+        ("q1&_type=sb", "调查b1?"),
+        ("q2&_type=sb", "调查b2?"),
+        ] %}
+
+    {% for m in quetions %}
+        {% set value = m[0] %}
+        {% set text = m[1] %}
+        <div class="magic-option magic-option-line">
+            <input class="magic-option-input"
+                   type="radio"
+                   value="{{ value }}"
+            >
+            <label> {{ text }} </label>
+        </div>
+    {% endfor %}
+{%- endmacro %}
+
+
+{% macro magic_select_survey_of_lesson() -%}
+    {% set title = '选择调查问题' %}
+    {% set key = 'question_key' %}
+    {% set options = magic_opiton_survey_of_lesson() %}
+    {% set result = magic_select(title, key, options) %}
+    {{ result }}
+{%- endmacro %}
+
