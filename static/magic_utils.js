@@ -5,6 +5,11 @@ const log = function() {
     console.log.apply(console, arguments)
 }
 
+const _e = sel => document.querySelector(sel)
+
+const _es = sel => document.querySelectorAll(sel)
+
+
 const queryFromDict = function(dict) {
     var args = []
     for (var k in dict) {
@@ -118,6 +123,24 @@ const magicHrefByForm = function(button, form, target = '_blank') {
     magicHref(url, target)
 }
 
+
+var magicTextUpdate = function(form, parentId, textClass = '.magic-text') {
+    for (var i in form) {
+        var value = form[i]
+        var attr = `${parentId} ${textClass}[data-key=${i}]`
+        var self = $(attr)
+        self.text(value)
+    }
+}
+
+var magicFormUpdate = function(form, parent, inputClass = '.magic-input') {
+    for (var i in form) {
+        var value = form[i]
+        var q = `${inputClass}[data-key=${i}]`
+        var self = $(parent).find(q)
+        self.val(value)
+    }
+}
 
 // ***************************************************************** //
 // 以下依赖 jquery
