@@ -22,6 +22,13 @@ input[type="search"] {
     display: none;
 }
 
+.disabled {
+    border: solid 1px #cdc9c7 !important;
+    background-color: #f0eded !important;
+    cursor: not-allowed !important;
+    color: #2b2b2b !important;
+}
+
 .right {
     float: right;
 }
@@ -46,30 +53,72 @@ input[type="search"] {
     transform: translate(-50%, -50%);
 }
 
-.btn-default:hover {
-    background-color: rgba(49, 161, 240, 0.70);
-    border: 1px solid #32a1f0;
+.oval {
+    padding: 3px 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.box {
+    margin: 20px 10px;
+    padding: 3px 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.block {
+    margin: 20px 20px;
+    padding: 10px 10px;
+    border-radius: 5px;
 }
 
 .btn-default {
-    display: inline-block;
     background: white;
     border: 1px solid #ccc;
-    border-radius: 3px;
     color: #626262;
+
+    display: inline-block;
+    border-radius: 3px;
     font-size: 14px;
     padding: 4px 8px;
     text-decoration: none;
     cursor: pointer;
     line-height: 17px;
+
 }
 
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active {
+    color: #f08713;
+    border: 1px solid rgba(240, 189, 125, 0.7);
+}
+
+.btn-blue,
+.btn-red:hover,
+.btn-red:active,
+.btn-red:focus,
+.btn-red.active {
+    /* 装饰在 .btn .btn-default 后面*/
+    border-color: #40bbe6;
+    color: #1673ff;
+    background-color: white;
+}
+
+.btn-red,
+.btn-blue:hover,
+.btn-blue:active,
+.btn-blue:focus,
+.btn-blue.active {
+    border-color: pink;
+    color: #ff29ce;
+    background-color: white;
+}
 
 .alert-required {
     border: 1px solid #ff28ab;
     color: #ff1078;
 }
-
 
 .red-16 {
     font-size: 16px;

@@ -8,42 +8,43 @@
 </head>
 <body>
 
-<div class="magic-auto-form">
-    <h3> 上传文件 </h3>
-    <div>
-        <input class="magic-input-file"
-               data-key="image"
-               type="file"
-               multiple>
+<div class="block">
+    <div class="magic-auto-form">
+        <h3> 上传文件 </h3>
+        <div>
+            <input class="magic-input-file"
+                   data-key="image"
+                   type="file"
+                   multiple>
+        </div>
+        <button class="magic-submit-file btn-default"
+                data-path="/api/upload/images"
+                data-block="log">
+            上传图片
+        </button>
     </div>
-    <button class="magic-submit-file"
-            data-path="/api/upload/images"
-            data-block="log">
-        上传图片
-    </button>
-</div>
 
-<div class="magic-auto-form">
-    <h3> Ajax 提交表单 </h3>
-    <input class="magic-input" data-key="name" placeholder="name">
-    <input class="magic-input" data-key="email" placeholder="*email" required>
-    <button class="magic-submit"
-            data-path="/api/task/add"
-            data-method="post"
-            data-block="log">
-        提交表单
-    </button>
-</div>
+    <div class="magic-auto-form">
+        <h3> Ajax 提交表单 </h3>
+        <input class="magic-input oval" data-key="name" placeholder="name">
+        <input class="magic-input oval" data-key="email" placeholder="*email" required>
+        <button class="magic-submit btn-blue"
+                data-path="/api/task/add"
+                data-method="post"
+                data-block="log">
+            提交表单
+        </button>
+    </div>
 
-<div class="magic-auto-form">
-    <h3> 模拟点击动态超链接 </h3>
-    <input class="magic-input" data-key="id" placeholder="user_id">
-    <button class="magic-submit-href"
-            data-path="/user">
-        访问链接
-    </button>
+    <div class="magic-auto-form">
+        <h3> 模拟点击动态超链接 </h3>
+        <input class="magic-input oval" data-key="id" placeholder="user_id">
+        <button class="magic-submit-href btn-red"
+                data-path="/user">
+            访问链接
+        </button>
+    </div>
 </div>
-
 </body>
 
 <script src="../static/magic_utils.js"></script>
