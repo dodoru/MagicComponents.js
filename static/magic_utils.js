@@ -1,5 +1,14 @@
 // 常用的功能函数，部分依赖 jquery
 
+class Model {
+    constructor(...args) {
+        this.data = args
+    }
+
+    static new(...args) {
+        return new this(...args)
+    }
+}
 
 const log = function() {
     console.log.apply(console, arguments)
