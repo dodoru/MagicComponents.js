@@ -165,8 +165,8 @@ const selectedMagicOptions = function(key, parent = document) {
     return es
 }
 
-const clearMagicOptions = function(key) {
-    var es = selectedMagicOptions(key)
+const clearMagicOptions = function(key, parent = document) {
+    var es = selectedMagicOptions(key, parent)
     // es 是 NodeList对象，不能用 map 和 for-in
     for (var e of es) {
         e.classList.remove('selected')
@@ -189,10 +189,12 @@ const reactSelectionDisplay = function(element, value) {
     var target = document.querySelector(target_id)
     var options = target.querySelectorAll('.magic-option')
     for (var option of options) {
-        // 判断选项是否显示的条件（.magic-option input[data-${key}]="${value}"）
-        var e = option.querySelector('.magic-option-input')
-        e.classList.remove('selected')
+        // step1: 重置子链选择题的选项
+        option.classList.remove('selected')
+        var e = option.querySelector('.gua-option-input')
+        e.checked = false
 
+        // step2: 判断选项是否显示的条件（.gua-option input[data-${key}]="${value}"）
         var v = e.dataset[key]
         if (v === value) {
             option.classList.remove('hidden')
@@ -213,7 +215,7 @@ const bindMagicSelection = function(callback) {
 
         var multiple = data.multiple
         if (multiple === "false") {
-            clearMagicOptions(key)
+            clearMagicOptions(key, psel)
             tsel.classList.add('selected')
             csel.checked = true
             // 如果是链式选择题，进行链式反应,
@@ -351,15 +353,15 @@ const magicHrefWithSelection = function(button, formClass = '.magic-auto-form') 
 }
 
 
-const bindMagicAjaxWithSelection = function(callback) {
-    $('body').on('click', '.magic-submit', function() {
+const bindMagicAjaxWithSelection = function(button = '.gua-submit', callback) {
+    $('body').on('click', button, function() {
         magicAjaxWithSelection(this, '.magic-auto-form', callback)
     })
 }
 
 
-const bindMagicHrefWithSelection = function(callback) {
-    $('body').on('click', '.magic-submit-href-with-selection', function(event) {
+const bindMagicHrefWithSelection = function(button = '.magic-submit-href-with-selection', callback) {
+    $('body').on('click', button, function(event) {
         var e = event.currentTarget
         magicHrefWithSelection(e)
         if (callback != undefined) {

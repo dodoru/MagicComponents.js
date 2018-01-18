@@ -7,6 +7,27 @@
     {{ m.magic_select(*args) }}
 #}
 
+
+{% macro magic_select_block(title, key, options, react_target='',select_id='', multiple=false,required=true, preset_value='') -%}
+
+    {% if preset_value %}
+        {% set preset = true %}
+    {% else %}
+        {% set preset = false %}
+    {% endif %}
+
+    {% set selection = magic_select(title, key, options, react_target, select_id, multiple, required) %}
+
+    <div class="magic-select-block"
+         data-preset="{{ preset | lower }}"
+         data-preset_value="{{ preset_value }}"
+         data-key="{{ key }}">
+        {{ selection }}
+    </div>
+
+{%- endmacro %}
+
+
 {% macro magic_select(title, key, options, react_target='',select_id='', multiple=false, required=true) -%}
     {# @title: str, 选择题目 #}
     {# @key: str, 表值 #}
@@ -54,6 +75,21 @@
 
 {%- endmacro %}
 
+
+{% macro magic_options(options, button='radio') -%}
+    {% for m in options %}
+        {% set value = m[0] %}
+        {% set text  = m[1] %}
+
+        <div class="magic-option">
+            <input class="magic-option-input"
+                   type="{{ button }}"
+                   value="{{ value }}"
+            >
+            <label> {{ text }} </label>
+        </div>
+    {% endfor %}
+{%- endmacro %}
 
 
 {# 1. 选择科目 ： subject  #}
@@ -133,36 +169,3 @@
     {% set result = magic_select(title, key, options, react_target, select_id) %}
     {{ result }}
 {%- endmacro %}
-
-
-{# 4. 选择调查问题 ： survey lesson  #}
-{% macro magic_opiton_survey() -%}
-    {% set quetions=[
-        ("q1&_type=sa", "调查a1?"),
-        ("q2&_type=sa"," 调查a2?"),
-        ("q1&_type=sb", "调查b1?"),
-        ("q2&_type=sb", "调查b2?"),
-        ] %}
-
-    {% for m in quetions %}
-        {% set value = m[0] %}
-        {% set text = m[1] %}
-        <div class="magic-option magic-option-line">
-            <input class="magic-option-input"
-                   type="radio"
-                   value="{{ value }}"
-            >
-            <label> {{ text }} </label>
-        </div>
-    {% endfor %}
-{%- endmacro %}
-
-
-{% macro magic_select_survey_of_lesson() -%}
-    {% set title = '选择调查问题' %}
-    {% set key = 'question_key' %}
-    {% set options = magic_opiton_survey_of_lesson() %}
-    {% set result = magic_select(title, key, options) %}
-    {{ result }}
-{%- endmacro %}
-
