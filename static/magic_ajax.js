@@ -1,86 +1,86 @@
-var magicAjax = {
-    data: {}
-}
+/*
+* @201807: 支持chrome, firefox, IE
+* */
 
-magicAjax.ajax = function(url, method, form, success, error) {
-    method = method.toLowerCase()
+var magicAjax = {
+    data: {},
+};
+
+magicAjax.ajax = function(url, method, form, callback, errorCallback = undefined) {
+    method = method.toLowerCase();
+    callback = callback || console.log;
+    errorCallback = errorCallback || callback;
     var request = {
         url: url,
         type: method,
         contentType: 'application/json',
         success: function(r) {
-            log('[LOG] magixAjax success', url, r);
-            success(r);
+            console.log('[LOG] magicAjax success', url, form, r);
+            callback(r);
         },
         error: function(err) {
-            r = {
+            var r = {
                 success: false,
-                data: err
-            }
-            log('[LOG] magixAjax error', url, err, error);
-            if (error != undefined) {
-                error(r);
-            }
-        }
+                data: err,
+            };
+            console.log('[LOG] magicAjax error', url, form, err);
+            errorCallback(r);
+        },
     };
     if (method === 'post') {
-        var data = JSON.stringify(form);
-        request.data = data;
+        request.data = JSON.stringify(form);
     }
     $.ajax(request);
 };
 
 // ***************************************************************** //
 
-magicAjax.get = function(url, response) {
+magicAjax.get = function(url, callback) {
     var method = 'get';
-    var form = {}
-    this.ajax(url, method, form, response, response);
-}
-
-magicAjax.post = function(url, form, success, error) {
-    var method = 'post';
-    this.ajax(url, method, form, success, error);
+    this.ajax(url, method, {}, callback);
 };
 
-magicAjax.upload = function(url, formData, response) {
+magicAjax.post = function(url, form, callback, errorCallback) {
+    var method = 'post';
+    this.ajax(url, method, form, callback, errorCallback);
+};
+
+magicAjax.upload = function(url, formData, callback, errorCallback) {
     // formData: 要用一个 FormData 对象来装 file
+    errorCallback = errorCallback || callback || console.log;
     var request = {
         url: url,
         method: 'post',
-        // 下面这两个选项一定要加上
-        contentType: false,
-        processData: false,
+        contentType: false,     // required!
+        processData: false,     // required!
         data: formData,
         success: function(r) {
-            response(r)
+            callback(r);
         },
         error: function(err) {
             var r = {
                 success: false,
                 message: '上传文件失败',
-                data: err
+                data: err,
             };
-            response(r)
-        }
-    }
-    $.ajax(request)
-}
+            errorCallback(r);
+        },
+    };
+    $.ajax(request);
+};
 
-magicAjax.upload_file = function(url, key, fileObject, response) {
-    //上传一个文件
-    var formData = new FormData()
-    formData.append(key, fileObject)
-    this.upload(url, formData, response)
-}
+magicAjax.upload_file = function(url, key, fileObject, callback) {
+    var formData = new FormData();
+    formData.append(key, fileObject);
+    this.upload(url, formData, callback);
+};
 
-magicAjax.upload_files = function(url, key, files, response) {
-    //上传多个文件
-    var formData = new FormData()
-    var count = files.length
+magicAjax.upload_files = function(url, key, files, callback) {
+    var formData = new FormData();
+    var count = files.length;
     for (var i = 0; i < count; i++) {
-        var ikey = key + '_' + i
-        formData.append(ikey, files[i])
+        var ikey = key + '_' + i;
+        formData.append(ikey, files[i]);
     }
-    this.upload(url, formData, response)
-}
+    this.upload(url, formData, callback);
+};
