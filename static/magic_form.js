@@ -1,153 +1,141 @@
 /*
-结构层
-.magic-auto-form
-
-    .magic-input-file
-    .magic-submit-file
-
-    .magic-input
-    .magic-submit
-    .magic-submit-href
-
- */
-
+@201807: 支持chrome, firefox, IE
+# depends:
+ - magic_ajax.js
+ - magic_util.js
+*/
 
 const existAlertRequired = function(button) {
-    // javascript 原生, 判断 parent 节点内是否存在没完成的必做题
-    var parent = button.closest('.magic-auto-form')
-    var alerts = parent.querySelectorAll('.alert-required')
-    return alerts.length > 0
-}
+    var parent = button.closest(".magic-auto-form");
+    var alerts = parent.querySelectorAll(".alert-required");
+    return alerts.length > 0;
+};
 
 
-const checkRequireInputs = function(button, inputClass = '.magic-input') {
+const checkRequireInputs = function(button, inputClass = ".magic-input") {
     // 依赖jquery, 检查输入, 并且返回是否通过
-    var flag = true
-    var inputs = $(button).closest('.magic-auto-form').find(inputClass)
-    $(inputs).removeClass('alert-required')
+    var flag = true;
+    var inputs = $(button).closest(".magic-auto-form").find(inputClass);
+    $(inputs).removeClass("alert-required");
     for (var input of inputs) {
-        var self = $(input)
-        var value = input.value.trim()
-        var required = self.attr('required')
-        if (value == '' && required == 'required') {
-            $(input).addClass('alert-required')
-            flag = false
+        var self = $(input);
+        var value = input.value.trim();
+        var required = self.attr("required");
+        if (value === "" && required === "required") {
+            $(input).addClass("alert-required");
+            flag = false;
         }
     }
-    return flag
-}
+    return flag;
+};
 
 
-const magicForm = function(button, inputClass = '.magic-input') {
-    /*
-        <div class="magic-auto-form">
-            <input class="magic-input" data-key="name">
-            <button class="magic-submit"
-                    data-path="/api/task/add"
-                    data-method="post"
-                    data-block="log">
-                    submit
-            </button>
-        </div>
-    * */
-    var inputs = $(button).closest('.magic-auto-form').find(inputClass)
-    var form = {}
+const magicForm = function(button, inputClass = ".magic-input") {
+    var inputs = $(button).closest(".magic-auto-form").find(inputClass);
+    var form = {};
     for (var input of inputs) {
-        var value = input.value.trim()
-        var key = input.dataset.key
-        form[key] = value
+        var value = input.value.trim();
+        var key = input.dataset.key;
+        form[key] = value;
     }
-    return form
-}
+    return form;
+};
 
 
-const magicReactForm = function(button, action = magicForm) {
-    var path = button.dataset.path
-    var method = button.dataset.method
-    var block = button.dataset.block
-    var response = eval(block)
-    // action 是通过 button 获取表格的函数方法
-    var form = action(button)
-    magicAjax.ajax(path, method, form, response)
-}
+const magicSubmitForm = function(button, action = magicForm) {
+    // action 是通过 button 获取表单的函数方法
+    var path = button.dataset.path;
+    var method = button.dataset.method;
+    var callback = button.dataset.callback;
+    var response = eval(callback);
+    var form = action(button);
+    magicAjax.ajax(path, method, form, response);
+};
 
 
 const magicUploadFiles = function(button, alertCallback) {
-    /* 上传多个文件
-        <div class="magic-auto-form">
-            <input class="magic-input-file"
-                   data-key="image"
-                   type="file"
-                   multiple>
-            <button class="magic-submit-file"
-                    data-path="/api/upload/images"
-                    data-block="viewUploadedImages">
-                    上传图片
-            </button>
-        </div>
-    */
-    var path = button.dataset.path
-    // block 这个函数必须定义好, 这是回调
-    var block = button.dataset.block
-
-    // 注意，只有一个设置 multiple 的 input.magic-input-file
-    var fileTag = $(button).closest('.magic-auto-form').find('.magic-input-file')[0]
-    var filename = fileTag.dataset.key
-    var files = fileTag.files;
-    var count = files.length;
-    if (count == 0) {
-        // mark: 自定义提示上传功能
-        if (alertCallback) {
-            alertCallback()
-        } else {
-            alert('请选择文件')
-        }
-    } else {
-        var response = eval(block)
-        magicAjax.upload_files(path, filename, files, response)
+    var path = button.dataset.path;
+    var callback = button.dataset.callback;
+    var tips = button.dataset.tips || "请选择文件";
+    var container = $(button).closest(".magic-auto-form");
+    if (!container) {
+        return console.error("[NotInMagicForm]", button);
     }
-}
+    // 注意，只有一个设置 multiple 的 input.magic-input-file
+    var fileInput = container.closest(".magic-auto-form")[0];
+    var filename = fileInput.dataset.key;
+    var files = fileInput.files;
+    var count = files.length;
+    if (count === 0) {
+        // mark: 自定义提示上传功能
+        alertCallback(tips);
+    } else {
+        var callbackFunc = eval(callback);
+        magicAjax.upload_files(path, filename, files, callbackFunc);
+    }
+};
 
+
+const magicHref = function(url, target = "_blank") {
+    // 模拟点击超链接
+    var m = document.createElement("a");
+    document.body.appendChild(m);
+    m.href = url;
+    m.target = target;
+    m.click();
+    document.body.removeChild(m);
+};
+
+const magicHrefByForm = function(button, form, target = "_blank") {
+    // button: 用于生成动态的超链接href的按钮（eg: .magic-submit-href）
+    // return: 模拟构造并访问动态超链接，form 组成超链接的 query_string
+    var path = button.dataset.path;
+    var hash = button.dataset.hash || "";
+    var query = utils.queryString(form);
+    var url = path + "?" + query;
+    if (hash.startsWith("#")) {
+        url = url + hash;
+    }
+    magicHref(url, target);
+};
 
 // ***************************************************************** //
 
 // 自动提交表单
-const bindMagicReactForm = function(success, fail) {
-    $('body').on('click', '.magic-submit', function() {
-        var e = this
-        if (checkRequireInputs(e)) {
-            magicReactForm(e)
-            if (success != undefined) {
-                success(e)
+const bindMagicSubmitForm = function(success, fail) {
+    $("body").on("click", ".magic-submit", function() {
+        var self = this;
+        if (checkRequireInputs(self)) {
+            magicSubmitForm(self);
+            if (typeof (success) === "function") {
+                success(self);
             }
         } else {
-            if (fail != undefined) {
-                fail(e)
+            if (typeof (fail) === "function") {
+                fail(self);
             }
         }
-    })
-}
-
-// 动态模拟超链接
-const bindMagicHref = function(callback) {
-    $('body').on('click', '.magic-submit-href', function() {
-        var e = this
-        if (checkRequireInputs(e)) {
-            form = magicForm(e)
-            magicHrefByForm(e, form)
-            if (callback != undefined) {
-                callback(e)
-            }
-        }
-    })
-}
+    });
+};
 
 // 上传多个文件
 const bindMagicUploadFiles = function(alertCallback) {
-    $('body').on('click', '.magic-submit-file', function() {
-        var e = this
-        magicUploadFiles(e, alertCallback)
-    })
-}
+    $("body").on("click", ".magic-submit-file", function() {
+        var self = this;
+        magicUploadFiles(self, alertCallback);
+    });
+};
 
-
+// 动态模拟超链接
+const bindMagicHref = function(callback) {
+    $("body").on("click", ".magic-submit-href", function() {
+        var self = this;
+        if (checkRequireInputs(self)) {
+            var form = magicForm(self);
+            magicHrefByForm(self, form);
+            if (typeof (callback) === "function") {
+                callback(self);
+            }
+        }
+    });
+};

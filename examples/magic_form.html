@@ -19,7 +19,7 @@
         </div>
         <button class="magic-submit-file btn-default"
                 data-path="/api/upload/images"
-                data-block="log">
+                data-callback="log">
             上传图片
         </button>
     </div>
@@ -31,7 +31,7 @@
         <button class="magic-submit btn-blue"
                 data-path="/api/task/add"
                 data-method="post"
-                data-block="log">
+                data-callback="log">
             提交表单
         </button>
     </div>
@@ -55,7 +55,7 @@
 
     $(document).ready(function() {
         bindMagicUploadFiles()
-        bindMagicReactForm()
+        bindMagicSubmitForm()
         bindMagicHref()
     })
 
