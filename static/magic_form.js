@@ -29,7 +29,6 @@ const checkRequireInputs = function(button, inputClass = ".magic-input") {
     return flag;
 };
 
-
 const magicForm = function(button, inputClass = ".magic-input") {
     var inputs = $(button).closest(".magic-auto-form").find(inputClass);
     var form = {};
@@ -43,7 +42,7 @@ const magicForm = function(button, inputClass = ".magic-input") {
 
 
 const magicSubmitForm = function(button, action = magicForm) {
-    // action 是通过 button 获取表单的函数方法
+    // 自动Ajax提交表单,  action 是通过 button 获取表单的函数方法
     var path = button.dataset.path;
     var method = button.dataset.method;
     var callback = button.dataset.callback;
@@ -54,6 +53,7 @@ const magicSubmitForm = function(button, action = magicForm) {
 
 
 const magicUploadFiles = function(button, alertCallback) {
+    // 上传多个文件
     var path = button.dataset.path;
     var callback = button.dataset.callback;
     var tips = button.dataset.tips || "请选择文件";
@@ -87,6 +87,7 @@ const magicHref = function(url, target = "_blank") {
 };
 
 const magicHrefByForm = function(button, form, target = "_blank") {
+    // 动态跳转当前页
     // button: 用于生成动态的超链接href的按钮（eg: .magic-submit-href）
     // return: 模拟构造并访问动态超链接，form 组成超链接的 query_string
     var path = button.dataset.path;
