@@ -55,23 +55,22 @@
  */
 
 const templateOption = function(option, option_type = "checkbox") {
-    var m = option;
-    var text = m.text || m.value;
-    var input = "";
-    var tag = "";
-    var remark = m.remark || false;
+    let m = option;
+    let text = m.text || m.value;
+    let input = "";
+    let tag = "";
+    let remark = m.remark || false;
     if (remark) {
         input = `<input data-tag="remark" placeholder="(备注)">`;
         tag = "magic-remark";
     }
-    var t = `
-            <div class="magic-option ${tag}">
-                <input class="magic-option-input" type="${option_type}" value="${m.value}" data-remark="${remark}">
-                <label> ${text} </label>
-                ${input}
-            </div>
-        `;
-    return t;
+    return `
+        <div class="magic-option ${tag}">
+            <input class="magic-option-input" type="${option_type}" value="${m.value}" data-remark="${remark}">
+            <label> ${text} </label>
+            ${input}
+        </div>
+    `;
 };
 
 const templateSelection = function(data) {
@@ -108,16 +107,15 @@ const templateSelection = function(data) {
         return templateOption(option, option_type);
     }).join("");
 
-    var t = `
-            <div class="magic-select" data-key="${m.key}"
-                data-required="${required}" data-multiple="${multiple}">
-                <p class="magic-select-title"> ${m.title} </p>
-                <div class="magic-select-options">
-                    ${options}
-                </div>
+    return `
+        <div class="magic-select" data-key="${m.key}"
+            data-required="${required}" data-multiple="${multiple}">
+            <p class="magic-select-title"> ${m.title} </p>
+            <div class="magic-select-options">
+                ${options}
             </div>
-        `;
-    return t;
+        </div>
+    `;
 };
 
 const renderMagicSelection = function(data, container_id) {
@@ -163,8 +161,7 @@ const selectedMagicOptions = function(key, parent = document) {
     // parent：选择题的父节点，默认为 document
     // return: 返回所有已选的选项
     var q = `.magic-select[data-key="${key}"] .magic-option.selected`;
-    var es = parent.querySelectorAll(q);
-    return es;
+    return parent.querySelectorAll(q);
 };
 
 const clearMagicOptions = function(key, parent = document) {
@@ -229,8 +226,7 @@ const bindMagicSelection = function(callback) {
             }
 
         } else {
-            var is_selected = tsel.classList.toggle("selected");
-            csel.checked = is_selected;
+            csel.checked = tsel.classList.toggle("selected");
         }
     });
 };
@@ -348,7 +344,7 @@ const magicHrefWithSelection = function(button, formClass = ".magic-auto-form") 
     if (is_valid) {
         magicHrefByForm(button, form);
     } else {
-        log("MagicHrefWithSelection failed", form, button);
+        console.log("MagicHrefWithSelection failed", form, button);
     }
 };
 
