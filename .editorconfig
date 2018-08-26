@@ -13,6 +13,7 @@ insert_final_newline = true
 
 [*.js]
 ij_javascript_use_semicolon_after_statement = true
+trim_trailing_whitespace = false
 
 [*.md]
 trim_trailing_whitespace = false
