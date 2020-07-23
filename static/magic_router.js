@@ -3,54 +3,43 @@
 *   - 移除所有 let `` 等 ES 新特性
 *   - 兼容 IE  浏览器
 *   - 不要再浪费时间精力情绪去劝别人停止使用各种以IE为内核的国产浏览器
+* - depends:
+*   - magic_utils
 * */
-
-var utils = {
-    eqNull: function(v) {
-        return v === '' || v === undefined || v === null;
-    },
-    argsFromQuery: function(query) {
-        var args = {};
-        var parameter = query.split('&');
-        parameter.forEach(function(e, i) {
-            var pair = e.split('=', 1);
-            var k = decodeURIComponent(pair[0]);
-            args[k] = decodeURIComponent(pair[1] || '');
-        });
-
-        return args;
-    },
-    queryString: function(query, nullable = false) {
-        // equal: Object.keys(query).map((k, i) => `${k}=${encodeURI(query[k])}`).join('&')
-        var keys = Object.keys(Query);
-        var ks = [];
-        keys.forEach(function(k, i) {
-            var v = query[k];
-            var eqNull = utils.eqNull(v);
-            if (nullable || !eqNull) {
-                var s = encodeURI(v) + '=' + encodeURI(v);
-                ks.push(s);
-            }
-        });
-        return ks.join("&");
-    },
-    urlFromQuery: function(baseUrl, query) {
-        var qs = utils.queryString(query);
-        var ps = baseUrl.split("#", 1);
-        var hash = ps[1] || '';
-        return ps[0] + '?' + args + '#' + hash;
-    },
-};
-
 
 var MagicRouter = function() {
     this.routes = {};
-    this.baseUrl = '';
+    this.baseUrl = "";
     this.query = {};
-    this.hashPrefix = '#/';
-    // hash 的形式如, #/view?id=1
+    this.hashPrefix = "#/";
+    // hash 的形式如 `#/view?id=1`
 };
 
+var currentHashKVAdd = function(key, value) {
+    var hash = window.location.hash;
+    var m, qs = utils.splitPair(hash, "#");    // m = "" || "$route"
+    var args = utils.argsFromQuery(qs);
+    args[key] = value;
+    var qs2 = utils.queryString(args);
+    window.location.hash = m + "?" + qs2;
+    console.log("HASH-CU", m, qs, qs2);
+};
+
+var currentHashKVDel = function(keys) {
+    var hash = window.location.hash;
+    var m, qs = utils.splitPair(hash, "#");    // m = "" || "$route"
+    var args = utils.argsFromQuery(qs);
+    if (typeof keys === "string") {
+        delete args[keys];
+    } else {
+        for (var k of keys) {
+            delete args[k];
+        }
+    }
+    var qs2 = utils.queryString(args);
+    window.location.hash = m + "?" + qs2;
+    console.log("HASH-D", m, qs, qs2);
+};
 
 MagicRouter.prototype = {
     constructor: MagicRouter,
@@ -70,8 +59,8 @@ MagicRouter.prototype = {
     _formatted: function() {
         var c = this.hashPrefix.length;
         var hash = location.hash.slice(c);
-        if (hash.includes('?')) {
-            var pair = hash.split('?');
+        if (hash.includes("?")) {
+            var pair = hash.split("?");
             var route = pair[0];
             var query = pair[1];
             var args = utils.argsFromQuery(query);
@@ -95,7 +84,7 @@ MagicRouter.prototype = {
     },
     init: function() {
         var self = this;
-        $(window).on('hashchange', function() {
+        $(window).on("hashchange", function() {
             self.refresh();
         });
     },
@@ -119,10 +108,10 @@ var singleRouterSample = function() {
     // 路由单例
     var router = singleRouter();
     // 注册路由函数
-    router.route('debug', function() {
-        console.log('debug', router.baseUrl, router.query, router);
+    router.route("debug", function() {
+        console.log("debug", router.baseUrl, router.query, router);
         //** custom loading Page here **
     });
-    $(window).trigger('hashchange');
+    $(window).trigger("hashchange");
     return router;
 };
